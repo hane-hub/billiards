@@ -10,6 +10,9 @@ export default defineConfig({
       },
     }),
   ],
+   build: {
+    outDir: 'dist'
+  },
   base: './',
    alias: {
       '@': path.resolve(__dirname, 'src'),
