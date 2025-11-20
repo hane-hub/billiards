@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client"; // note /client
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/login";
-import Home from "./pages/Home";
-import Room from "./pages/Room";
+import LoginPage from "./pages/login.jsx";
+import Home from "./pages/Home.jsx";
+import Room from "./pages/Room.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
