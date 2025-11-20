@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client"; // note /client
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/login.jsx";
+import LoginPage from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Room from "./pages/Room.jsx";
 
