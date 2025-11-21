@@ -13,106 +13,41 @@ export default function LoginPage() {
   };
 
  return (
-  <div style={{
-    display: "flex",
-    height: "100vh",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    backgroundColor: "#1a202c", // Dark navy background
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    // color: "#ffffff",
-    padding: "20px"
-  }}>
+  <div className="flex flex-col items-center justify-center min-h-screen bg-[#1a202c] px-5 py-10 font-sans">
     
     {/* Header Section */}
-    <div style={{
-      textAlign: "center",
-      marginBottom: "30px"
-    }}>
-      <h1 style={{
-        fontSize: "4rem",
-        fontWeight: "bold",
-        color: "#6366f1", // Purple color for POCKET ACE
-        letterSpacing: "0.1em",
-        margin: "0 0 20px 0"
-      }}>
-        POCKET ACE
+    <div className="text-center mb-8 sm:mb-12">
+      <h1 className="text-4xl sm:text-5xl font-bold tracking-widest text-indigo-400 mb-5">
+        POKER POOL
       </h1>
-      <p style={{
-        color: "#a0aec0", // Light gray
-        fontSize: "1.1rem",
-        lineHeight: "1.6",
-        maxWidth: "500px",
-        margin: "0 auto"
-      }}>
+      <p className="text-gray-400 text-sm sm:text-base leading-6 max-w-xs sm:max-w-md mx-auto">
         A real-life poker billiards helper. Create a room, share the<br />
         code, and let the app handle the cards and scoring.
       </p>
     </div>
 
     {/* Login Card */}
-    <div style={{
-      backgroundColor: "#2d3748", // Darker card background
-      padding: "40px",
-      borderRadius: "12px",
-      border: "1px solid #4a5568",
-      minWidth: "350px",
-      textAlign: "center"
-    }}>
-      <h2 style={{
-        fontSize: "1.8rem",
-        fontWeight: "600",
-        color: "#ffffff",
-        margin: "0 0 8px 0"
-      }}>
+    <div className="bg-[#2d3748] border border-gray-600 rounded-xl p-8 sm:p-10 w-full max-w-sm text-center">
+      <h2 className="text-2xl sm:text-3xl font-semibold text-white mb-2">
         Welcome
       </h2>
-      <p style={{
-        color: "#a0aec0",
-        fontSize: "1rem",
-        margin: "0 0 30px 0"
-      }}>
+      <p className="text-gray-400 text-base sm:text-lg mb-6">
         Sign in to play Pocket Aces.
       </p>
       
       <button
         onClick={handleLogin}
-        style={{
-          width: "100%",
-          padding: "14px 24px",
-          borderRadius: "8px",
-          background: "#6366f1", // Purple button to match theme
-          color: "#ffffff",
-          fontSize: "16px",
-          fontWeight: "500",
-          cursor: "pointer",
-          border: "none",
-          transition: "all 0.2s ease",
-          boxShadow: "0 4px 12px rgba(99, 102, 241, 0.3)"
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = "#5856eb";
-          e.target.style.transform = "translateY(-1px)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = "#6366f1";
-          e.target.style.transform = "translateY(0)";
-        }}
+        className="w-full py-3 sm:py-4 rounded-lg bg-indigo-500 text-white font-medium text-base sm:text-lg shadow-lg hover:bg-indigo-400 transition transform hover:-translate-y-1"
       >
         Sign in with Google
       </button>
     </div>
 
     {/* Footer Text */}
-    <p style={{
-      color: "#718096",
-      fontSize: "0.9rem",
-      marginTop: "15px",
-      textAlign: "center"
-    }}>
+    <p className="text-gray-500 text-xs sm:text-sm mt-4 sm:mt-6 text-center max-w-xs sm:max-w-md">
       Built for real-life play. No online gaming, just fun with friends.
     </p>
   </div>
 );
+
 }

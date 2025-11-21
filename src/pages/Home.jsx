@@ -68,7 +68,7 @@ return (
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-indigo-500 tracking-wider mb-4 sm:mb-5">
-          POCKET ACE
+          POKER POOL
         </h1>
         <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xs sm:max-w-md mx-auto px-2">
           A real-life poker billiards helper. Create a room, share the code, and let the app handle the cards and scoring.

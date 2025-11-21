@@ -112,126 +112,65 @@ export default function Room() {
   const isHost = user.uid === room.host;
 
   return (
-    <div
-      style={{
-        minHeight: "auto",
-        background: "#0D0F2B",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px",
-        color: "white",
-        fontFamily: "Inter, sans-serif"
-      }}
-    >
-      <div
-        style={{
-          background: "#111433",
-          padding: "32px",
-          width: "380px",
-          borderRadius: "16px",
-          boxShadow: "0 0 40px rgba(0,0,0,0.4)",
-          textAlign: "center",
-        }}
-      >
-        <div style={{ fontSize: "38px", marginBottom: "10px" }}>🎉</div>
-        <h2 style={{ margin: 0, fontSize: "28px", fontWeight: 700 }}>
-          Game Lobby
-        </h2>
-        <div style={{ marginTop: "4px", opacity: 0.7, fontSize: "15px" }}>
-          {user?.displayName}
-        </div>
-        <p style={{ marginTop: "12px", opacity: 0.7 }}>
-          Share the code below with your friends to join.
-        </p>
+  <div className="flex items-center justify-center min-h-screen bg-[#0D0F2B] px-4 py-8 font-sans text-white">
+    <div className="bg-[#111433] p-8 sm:p-10 w-full max-w-md rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.4)] text-center">
+      
+      <div className="text-4xl mb-2">🎉</div>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-1">Game Lobby</h2>
+      <div className="text-sm sm:text-base opacity-70 mt-1">{user?.displayName}</div>
 
-        <div style={{ marginTop: "20px", fontSize: "12px", opacity: 0.7 }}>
-          GAME CODE
-        </div>
-        <div
-          style={{
-            marginTop: "8px",
-            background: "#1A1D46",
-            padding: "14px 0",
-            borderRadius: "10px",
-            fontSize: "26px",
-            letterSpacing: "6px",
-            fontWeight: "700",
-          }}
-        >
-          {roomCode}
-        </div>
+      <p className="text-sm opacity-70 mt-3">
+        Share the code below with your friends to join.
+      </p>
 
-        <button
-          onClick={() => navigator.clipboard.writeText(roomCode)}
-          style={{
-            marginTop: "10px",
-            background: "transparent",
-            border: "1px solid #343864",
-            padding: "6px 10px",
-            borderRadius: "8px",
-            color: "#aaa",
-            cursor: "pointer",
-            fontSize: "14px"
-          }}
-        >
-          Copy Code
-        </button>
-
-        <div style={{ textAlign: "left", marginTop: "26px" }}>
-          <div style={{ fontSize: "16px", fontWeight: 600, marginBottom: "10px" }}>
-            👥 Players ({room.players.length})
-          </div>
-          {room.players.map((p) => (
-            <div
-              key={p.uid}
-              style={{
-                background: "#1A1D46",
-                padding: "12px",
-                borderRadius: "10px",
-                marginBottom: "10px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                fontSize: "15px",
-              }}
-            >
-              <span>{p.name}</span>
-              <span style={{ fontSize: "12px", color: "#ffdd55" }}>
-                {p.uid === room.host ? "HOST" : ""}
-                {p.uid === room.host && p.uid === user.uid ? " (You)" : ""}
-                {p.uid === user.uid && p.uid !== room.host ? "(You)" : ""}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {isHost && !room.started && (
-          <button
-            onClick={handleStartGame}
-            style={{
-              width: "100%",
-              marginTop: "20px",
-              background: "#4C5FFF",
-              padding: "14px",
-              borderRadius: "10px",
-              border: "none",
-              fontSize: "17px",
-              fontWeight: "600",
-              cursor: "pointer",
-              color: "white",
-            }}
-          >
-            Start Game
-          </button>
-        )}
-
-        {room.started && (
-          <div style={{ marginTop: "20px", color: "#4C5FFF", fontWeight: 600 }}>
-            Game is starting...
-          </div>
-        )}
+      <div className="text-xs sm:text-sm opacity-70 mt-5">GAME CODE</div>
+      <div className="mt-2 bg-[#1A1D46] py-3 rounded-lg text-2xl sm:text-3xl font-bold tracking-widest">
+        {roomCode}
       </div>
+
+      <button
+        onClick={() => navigator.clipboard.writeText(roomCode)}
+        className="mt-2 border border-gray-700 rounded-lg px-3 py-1 text-sm text-gray-400 hover:text-white transition"
+      >
+        Copy Code
+      </button>
+
+      <div className="text-left mt-6">
+        <div className="text-base font-semibold mb-2">
+          👥 Players ({room.players.length})
+        </div>
+
+        {room.players.map((p) => (
+          <div
+            key={p.uid}
+            className="bg-[#1A1D46] p-3 rounded-lg mb-2 flex justify-between items-center text-sm"
+          >
+            <span>{p.name}</span>
+            <span className="text-xs text-yellow-400">
+              {p.uid === room.host ? "HOST" : ""}
+              {p.uid === room.host && p.uid === user.uid ? " (You)" : ""}
+              {p.uid === user.uid && p.uid !== room.host ? "(You)" : ""}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {isHost && !room.started && (
+        <button
+          onClick={handleStartGame}
+          className="w-full mt-4 py-3 bg-[#4C5FFF] rounded-lg font-semibold text-lg hover:bg-[#3b4fd9] transition"
+        >
+          Start Game
+        </button>
+      )}
+
+      {room.started && (
+        <div className="mt-4 text-[#4C5FFF] font-semibold">
+          Game is starting...
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
 }
