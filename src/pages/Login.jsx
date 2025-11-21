@@ -21,14 +21,14 @@ export default function LoginPage() {
     flexDirection: "column",
     backgroundColor: "#1a202c", // Dark navy background
     fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    color: "#ffffff",
+    // color: "#ffffff",
     padding: "20px"
   }}>
     
     {/* Header Section */}
     <div style={{
       textAlign: "center",
-      marginBottom: "60px"
+      marginBottom: "30px"
     }}>
       <h1 style={{
         fontSize: "4rem",
@@ -108,7 +108,7 @@ export default function LoginPage() {
     <p style={{
       color: "#718096",
       fontSize: "0.9rem",
-      marginTop: "60px",
+      marginTop: "15px",
       textAlign: "center"
     }}>
       Built for real-life play. No online gaming, just fun with friends.

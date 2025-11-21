@@ -3,6 +3,7 @@ import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
+
 export default function Home() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -63,311 +64,126 @@ export default function Home() {
   if (!user) return <p>Loading...</p>;
 
 return (
-  <div style={{
-    display: "flex",
-    height: "100vh",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    backgroundColor: "#1a202c", // Dark navy background
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    color: "#ffffff",
-    padding: "20px"
-  }}>
-    
-    {/* Header Section */}
-    <div style={{
-      textAlign: "center",
-      marginBottom: "60px"
-    }}>
-      <h1 style={{
-        fontSize: "4rem",
-        fontWeight: "bold",
-        color: "#6366f1", // Purple color for POCKET ACE
-        letterSpacing: "0.1em",
-        margin: "0 0 20px 0"
-      }}>
-        POCKET ACE
-      </h1>
-      <p style={{
-        color: "#a0aec0", // Light gray
-        fontSize: "1.1rem",
-        lineHeight: "1.6",
-        maxWidth: "500px",
-        margin: "0 auto"
-      }}>
-        A real-life poker billiards helper. Create a room, share the<br />
-        code, and let the app handle the cards and scoring.
+    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center px-4 py-8 sm:py-12">
+      {/* Header */}
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-indigo-500 tracking-wider mb-4 sm:mb-5">
+          POCKET ACE
+        </h1>
+        <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-xs sm:max-w-md mx-auto px-2">
+          A real-life poker billiards helper. Create a room, share the code, and let the app handle the cards and scoring.
+        </p>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex w-full max-w-xs sm:max-w-sm md:max-w-md">
+        <button
+          onClick={() => setActiveTab("create")}
+          className={`flex-1 py-3 px-4 text-sm font-medium transition-colors rounded-tl-lg border border-b-0 border-slate-600 ${
+            activeTab === "create"
+              ? "bg-slate-700 text-white"
+              : "bg-slate-600 text-slate-400 hover:text-slate-300"
+          }`}
+        >
+          Create Game
+        </button>
+        <button
+          onClick={() => setActiveTab("join")}
+          className={`flex-1 py-3 px-4 text-sm font-medium transition-colors rounded-tr-lg border border-b-0 border-l-0 border-slate-600 ${
+            activeTab === "join"
+              ? "bg-slate-700 text-white"
+              : "bg-slate-600 text-slate-400 hover:text-slate-300"
+          }`}
+        >
+          Join Game
+        </button>
+      </div>
+
+      {/* Main Card */}
+      <div className="w-full max-w-xs sm:max-w-sm md:max-w-md bg-slate-700 p-6 sm:p-8 md:p-10 rounded-b-xl border border-slate-600 border-t-0">
+        {activeTab === "create" ? (
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold text-white mb-2">
+              Create a New Game
+            </h2>
+            <p className="text-slate-400 text-sm mb-6 sm:mb-8">
+              Set up a new game room for your friends.
+            </p>
+
+            <div className="mb-5">
+              <label className="block text-slate-200 text-sm font-medium mb-2">
+                Your Name
+              </label>
+              <input
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="Player 1"
+                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              />
+            </div>
+
+            <button
+              onClick={handleCreateRoom}
+              className="w-full py-3 sm:py-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/30"
+            >
+              Create Game
+            </button>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold text-white mb-2">
+              Join an Existing Game
+            </h2>
+            <p className="text-slate-400 text-sm mb-6 sm:mb-8">
+              Enter your name and the 6-digit game code.
+            </p>
+
+            <div className="mb-5">
+              <label className="block text-slate-200 text-sm font-medium mb-2">
+                Your Name
+              </label>
+              <input
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="Player 2"
+                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              />
+            </div>
+
+            <div className="mb-6 sm:mb-8">
+              <label className="block text-slate-200 text-sm font-medium mb-2">
+                Game Code
+              </label>
+              <input
+                value={joinRoomCode}
+                onChange={(e) => setJoinRoomCode(e.target.value.toUpperCase())}
+                placeholder="ABC123"
+                maxLength={6}
+                className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white placeholder-slate-500 text-center tracking-widest uppercase focus:outline-none focus:border-indigo-500 transition-colors"
+              />
+            </div>
+
+            <button
+              onClick={handleJoinRoom}
+              className="w-full py-3 sm:py-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/30"
+            >
+              Join Game
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Links */}
+      <a
+        href="#"
+        className="text-indigo-500 hover:text-indigo-400 text-sm mt-6 sm:mt-8 transition-colors"
+      >
+        View Game History
+      </a>
+
+      <p className="text-slate-500 text-xs sm:text-sm mt-8 sm:mt-10 text-center px-4">
+        Built for real-life play. No online gaming, just fun with friends.
       </p>
     </div>
-
-    {/* Tab Navigation */}
-    <div style={{
-      display: "flex",
-      marginBottom: "0",
-      borderRadius: "8px 8px 0 0",
-      overflow: "hidden",
-      border: "1px solid #4a5568",
-      borderBottom: "none"
-    }}>
-      <button 
-        onClick={() => setActiveTab("create")}
-        style={{
-          padding: "12px 24px",
-          border: "none",
-          background: activeTab === "create" ? "#2d3748" : "#4a5568",
-          color: activeTab === "create" ? "#ffffff" : "#a0aec0",
-          fontSize: "14px",
-          fontWeight: "500",
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          borderRight: "1px solid #4a5568"
-        }}
-      >
-        Create Game
-      </button>
-      <button 
-        onClick={() => setActiveTab("join")}
-        style={{
-          padding: "12px 24px",
-          border: "none",
-          background: activeTab === "join" ? "#2d3748" : "#4a5568",
-          color: activeTab === "join" ? "#ffffff" : "#a0aec0",
-          fontSize: "14px",
-          fontWeight: "500",
-          cursor: "pointer",
-          transition: "all 0.2s ease"
-        }}
-      >
-        Join Game
-      </button>
-    </div>
-
-    {/* Main Content Card */}
-    <div style={{
-      backgroundColor: "#2d3748", // Darker card background
-      padding: "40px",
-      borderRadius: "0 0 12px 12px",
-      border: "1px solid #4a5568",
-      minWidth: "400px",
-      textAlign: "left"
-    }}>
-      
-      {/* Create Tab Content */}
-      {activeTab === "create" && (
-        <div>
-          <h2 style={{
-            fontSize: "1.5rem",
-            fontWeight: "600",
-            color: "#ffffff",
-            margin: "0 0 8px 0"
-          }}>
-            Create a New Game
-          </h2>
-          <p style={{
-            color: "#a0aec0",
-            fontSize: "0.95rem",
-            margin: "0 0 30px 0"
-          }}>
-            Set up a new game room for your friends.
-          </p>
-          
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              color: "#e2e8f0",
-              fontSize: "14px",
-              fontWeight: "500",
-              marginBottom: "8px"
-            }}>
-              Your Name
-            </label>
-            <input 
-              value={playerName} 
-              onChange={(e) => setPlayerName(e.target.value)} 
-              placeholder="Player 1"
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "8px",
-                border: "1px solid #4a5568",
-                backgroundColor: "#1a202c",
-                color: "#ffffff",
-                fontSize: "16px",
-                outline: "none",
-                transition: "border-color 0.2s ease"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#6366f1"}
-              onBlur={(e) => e.target.style.borderColor = "#4a5568"}
-            />
-          </div>
-          
-          <button 
-            onClick={handleCreateRoom} 
-            style={{
-              width: "100%",
-              padding: "14px 24px",
-              borderRadius: "8px",
-              background: "#6366f1",
-              color: "#ffffff",
-              fontSize: "16px",
-              fontWeight: "500",
-              cursor: "pointer",
-              border: "none",
-              transition: "all 0.2s ease",
-              boxShadow: "0 4px 12px rgba(99, 102, 241, 0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#5856eb";
-              e.target.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "#6366f1";
-              e.target.style.transform = "translateY(0)";
-            }}
-          >
-            Create Game
-          </button>
-        </div>
-      )}
-
-      {/* Join Tab Content */}
-      {activeTab === "join" && (
-        <div>
-          <h2 style={{
-            fontSize: "1.5rem",
-            fontWeight: "600",
-            color: "#ffffff",
-            margin: "0 0 8px 0"
-          }}>
-            Join an Existing Game
-          </h2>
-          <p style={{
-            color: "#a0aec0",
-            fontSize: "0.95rem",
-            margin: "0 0 30px 0"
-          }}>
-            Enter your name and the 6-digit game code.
-          </p>
-          
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{
-              display: "block",
-              color: "#e2e8f0",
-              fontSize: "14px",
-              fontWeight: "500",
-              marginBottom: "8px"
-            }}>
-              Your Name
-            </label>
-            <input 
-              value={playerName} 
-              onChange={(e) => setPlayerName(e.target.value)} 
-              placeholder="Player 2"
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "8px",
-                border: "1px solid #4a5568",
-                backgroundColor: "#1a202c",
-                color: "#ffffff",
-                fontSize: "16px",
-                outline: "none",
-                transition: "border-color 0.2s ease"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#6366f1"}
-              onBlur={(e) => e.target.style.borderColor = "#4a5568"}
-            />
-          </div>
-
-          <div style={{ marginBottom: "30px" }}>
-            <label style={{
-              display: "block",
-              color: "#e2e8f0",
-              fontSize: "14px",
-              fontWeight: "500",
-              marginBottom: "8px"
-            }}>
-              Game Code
-            </label>
-            <input 
-              value={joinRoomCode} 
-              onChange={(e) => setJoinRoomCode(e.target.value.toUpperCase())} 
-              placeholder="ABC123"
-              maxLength="6"
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "8px",
-                border: "1px solid #4a5568",
-                backgroundColor: "#1a202c",
-                color: "#ffffff",
-                fontSize: "16px",
-                letterSpacing: "0.1em",
-                textAlign: "center",
-                outline: "none",
-                transition: "border-color 0.2s ease"
-              }}
-              onFocus={(e) => e.target.style.borderColor = "#6366f1"}
-              onBlur={(e) => e.target.style.borderColor = "#4a5568"}
-            />
-          </div>
-          
-          <button 
-            onClick={handleJoinRoom} 
-            style={{
-              width: "100%",
-              padding: "14px 24px",
-              borderRadius: "8px",
-              background: "#6366f1",
-              color: "#ffffff",
-              fontSize: "16px",
-              fontWeight: "500",
-              cursor: "pointer",
-              border: "none",
-              transition: "all 0.2s ease",
-              boxShadow: "0 4px 12px rgba(99, 102, 241, 0.3)"
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#5856eb";
-              e.target.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "#6366f1";
-              e.target.style.transform = "translateY(0)";
-            }}
-          >
-            Join Game
-          </button>
-        </div>
-      )}
-    </div>
-
-    {/* View Game History Link */}
-    <a 
-      href="#" 
-      style={{
-        color: "#6366f1",
-        fontSize: "0.9rem",
-        marginTop: "30px",
-        textDecoration: "none",
-        transition: "color 0.2s ease"
-      }}
-      onMouseEnter={(e) => e.target.style.color = "#5856eb"}
-      onMouseLeave={(e) => e.target.style.color = "#6366f1"}
-    >
-      View Game History
-    </a>
-
-    {/* Footer Text */}
-    <p style={{
-      color: "#718096",
-      fontSize: "0.9rem",
-      marginTop: "40px",
-      textAlign: "center"
-    }}>
-      Built for real-life play. No online gaming, just fun with friends.
-    </p>
-  </div>
-);
+  );
 }

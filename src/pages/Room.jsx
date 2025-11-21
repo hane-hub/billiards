@@ -114,7 +114,7 @@ export default function Room() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        minHeight: "auto",
         background: "#0D0F2B",
         display: "flex",
         justifyContent: "center",

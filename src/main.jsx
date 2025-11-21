@@ -5,6 +5,7 @@ import LoginPage from "./pages/Login.jsx";
 import Home from "./pages/Home.jsx";
 import Room from "./pages/Room.jsx";
 import InGame from "./pages/Ingame.jsx";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
