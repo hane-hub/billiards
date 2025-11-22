@@ -88,7 +88,10 @@ export default function InGame() {
         <h3 className="mt-2 text-lg">Player: {myPlayer.name}</h3>
 
         <h2 className="mt-4 text-lg font-semibold">
-          Your Cards ({7 - (myPlayer.selectedCards?.length || 0)})
+          Your Cards (
+          {(myPlayer.cards?.length || 0) -
+            (myPlayer.selectedCards?.length || 0)}
+          )
         </h2>
 
         {/* Cards */}
@@ -166,61 +169,63 @@ export default function InGame() {
             );
           })}
         </div>
-         {/* Confirm Foul Draw */}
-      {showConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-          <div className="bg-[#1A1D46] p-6 rounded-xl text-center w-[90%] max-w-sm shadow-lg">
-            <h2 className="text-lg font-semibold mb-3">Confirm Draw</h2>
-            <p className="text-gray-300 text-sm mb-6">
-              Are you sure you want to draw a card? (Only for foul penalty)
-            </p>
+        {/* Confirm Foul Draw */}
+        {showConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+            <div className="bg-[#1A1D46] p-6 rounded-xl text-center w-[90%] max-w-sm shadow-lg">
+              <h2 className="text-lg font-semibold mb-3">Confirm Draw</h2>
+              <p className="text-gray-300 text-sm mb-6">
+                Are you sure you want to draw a card? (Only for foul penalty)
+              </p>
 
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={async () => {
-                  await handleDrawCard();
-                  setShowConfirm(false);
-                }}
-                className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition"
-              >
-                Yes, Draw
-              </button>
+              <div className="flex justify-center gap-3">
+                <button
+                  onClick={async () => {
+                    await handleDrawCard();
+                    setShowConfirm(false);
+                  }}
+                  className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition"
+                >
+                  Yes, Draw
+                </button>
 
-              <button
-                onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition"
-              >
-                Cancel
-              </button>
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {winner && (
-  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-    <div className="bg-[#1A1D46] p-6 rounded-xl text-center w-[90%] max-w-sm shadow-lg">
-      <h2 className="text-xl font-bold mb-3 text-green-400">🎉 Winner! 🎉</h2>
-      <p className="text-gray-300 text-sm mb-6">
-        {winner} has selected all their cards and won the game!
-      </p>
-      <div className="flex justify-center gap-3">
-        <button
-          onClick={() => window.location.href = "/home"} 
-          className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition"
-        >
-          Go Back Home
-        </button>
-        <button
-          onClick={() => setWinner(null)} // just close popup
-          className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        {winner && (
+          <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+            <div className="bg-[#1A1D46] p-6 rounded-xl text-center w-[90%] max-w-sm shadow-lg">
+              <h2 className="text-xl font-bold mb-3 text-green-400">
+                🎉 Winner! 🎉
+              </h2>
+              <p className="text-gray-300 text-sm mb-6">
+                {winner} has selected all their cards and won the game!
+              </p>
+              <div className="flex justify-center gap-3">
+                <button
+                  onClick={() => (window.location.href = "/home")}
+                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition"
+                >
+                  Go Back Home
+                </button>
+                <button
+                  onClick={() => setWinner(null)} // just close popup
+                  className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
