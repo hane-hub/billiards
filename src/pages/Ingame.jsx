@@ -7,6 +7,8 @@ export default function InGame() {
   const { roomCode } = useParams();
   const [room, setRoom] = useState(null);
   const [user, setUser] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [winner, setWinner] = useState(null);
 
   // Auth listener
   useEffect(() => {
@@ -36,24 +38,45 @@ export default function InGame() {
   // Toggle card selection and update Firestore
   const handleCardClick = async (index) => {
     const roomRef = doc(db, "rooms", roomCode);
-
-    // Determine new selected cards for this player
     const selectedCards = myPlayer.selectedCards || [];
     let newSelected;
+
+    // Toggle selection
     if (selectedCards.includes(index)) {
       newSelected = selectedCards.filter((i) => i !== index);
-    } else if (selectedCards.length < 7) {
-      newSelected = [...selectedCards, index];
     } else {
-      return; // max reached
+      newSelected = [...selectedCards, index];
     }
 
-    // Update player in Firestore
+    // Update Firestore
     const updatedPlayers = room.players.map((p) =>
       p.uid === user.uid ? { ...p, selectedCards: newSelected } : p
     );
-
     await updateDoc(roomRef, { players: updatedPlayers });
+
+    // Check if player has selected all their cards
+    if (newSelected.length === myPlayer.cards.length) {
+      setWinner(myPlayer.name); // Set winner
+    }
+  };
+
+  const handleDrawCard = async () => {
+    if (!room?.deck?.length) return; // no cards left
+
+    const roomRef = doc(db, "rooms", roomCode);
+
+    // Take 1 card from top of deck
+    const [drawnCard, ...newDeck] = room.deck;
+
+    // Add to player's hand
+    const updatedPlayers = room.players.map((p) =>
+      p.uid === user.uid ? { ...p, cards: [...p.cards, drawnCard] } : p
+    );
+
+    await updateDoc(roomRef, {
+      deck: newDeck,
+      players: updatedPlayers,
+    });
   };
 
   return (
@@ -78,7 +101,9 @@ export default function InGame() {
                   key={i}
                   onClick={() => handleCardClick(i)}
                   className={`relative border border-[#333] p-3 rounded-lg bg-[#1A1D46] min-w-[50px] text-center cursor-pointer transition
-                  ${isSelected ? "opacity-60 scale-95" : "opacity-100 scale-100"}`}
+                  ${
+                    isSelected ? "opacity-60 scale-95" : "opacity-100 scale-100"
+                  }`}
                 >
                   {c.rank}
                   {c.suit}
@@ -91,6 +116,29 @@ export default function InGame() {
           ) : (
             <p className="text-gray-300">No cards yet</p>
           )}
+        </div>
+
+        {/* Draw card + deck count */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-300">
+            Cards Left in Deck: <strong>{room.deck?.length || 0}</strong>
+          </p>
+
+          {/* Only show draw button for this player */}
+          {/* <button
+            onClick={handleDrawCard}
+            disabled={!room.deck?.length}
+            className="mt-3 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition"
+          >
+            Draw Card (Foul)
+          </button> */}
+          <button
+            onClick={() => setShowConfirm(true)}
+            disabled={!room.deck?.length}
+            className="mt-3 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition"
+          >
+            Draw Card (Foul)
+          </button>
         </div>
 
         {/* Players */}
@@ -118,6 +166,61 @@ export default function InGame() {
             );
           })}
         </div>
+         {/* Confirm Foul Draw */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-[#1A1D46] p-6 rounded-xl text-center w-[90%] max-w-sm shadow-lg">
+            <h2 className="text-lg font-semibold mb-3">Confirm Draw</h2>
+            <p className="text-gray-300 text-sm mb-6">
+              Are you sure you want to draw a card? (Only for foul penalty)
+            </p>
+
+            <div className="flex justify-center gap-3">
+              <button
+                onClick={async () => {
+                  await handleDrawCard();
+                  setShowConfirm(false);
+                }}
+                className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 transition"
+              >
+                Yes, Draw
+              </button>
+
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {winner && (
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div className="bg-[#1A1D46] p-6 rounded-xl text-center w-[90%] max-w-sm shadow-lg">
+      <h2 className="text-xl font-bold mb-3 text-green-400">🎉 Winner! 🎉</h2>
+      <p className="text-gray-300 text-sm mb-6">
+        {winner} has selected all their cards and won the game!
+      </p>
+      <div className="flex justify-center gap-3">
+        <button
+          onClick={() => window.location.href = "/home"} 
+          className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition"
+        >
+          Go Back Home
+        </button>
+        <button
+          onClick={() => setWinner(null)} // just close popup
+          className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 transition"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
       </div>
     </div>
   );
