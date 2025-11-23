@@ -1,24 +1,21 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBXoPwSY6HvUOAwnGdq5p1swcGsWoqLmaU",
-  authDomain: "poker-billiards.firebaseapp.com",
-  projectId: "poker-billiards",
-  storageBucket: "poker-billiards.firebasestorage.app",
-  messagingSenderId: "353423862340",
-  appId: "1:353423862340:web:d01c80fc171db34e262a11",
-  measurementId: "G-XRK7XQP146"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
 };
 
-// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
-// Auth
-export const auth = getAuth(app);
-export const provider = new GoogleAuthProvider();
-export const signInWithGoogle = () => signInWithPopup(auth, provider);
-
-// Firestore
 export const db = getFirestore(app);
+export const auth = getAuth(app);
+
+// --- Add Google Sign In ---
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
+export const signInWithGoogle = () => signInWithPopup(auth, provider);
