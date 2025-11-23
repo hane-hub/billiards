@@ -1,3 +1,35 @@
+🎱 Poker Pool — Multiplayer Card-Based Billiards Game
+
+Poker Pool is a fun, lightweight, multiplayer web app inspired by the billiards-style card games I used to play back in Yangon.
+Each player receives 7 cards, and the goal is to score all 7 before anyone else—just like pocketing balls in pool, but using poker cards.
+
+Since using real cards in public isn’t allowed in Thailand, I built this digital version to play with friends anytime, anywhere.
+No gambling. No money. Just a simple, realtime card game for entertainment.
+
+🚀 Tech Stack
+
+Firebase Auth – Google Login
+
+Firestore – Realtime game rooms + card sync
+
+React + Vite – Frontend UI
+
+Vercel – Deployment
+
+🎯 Features
+
+Create or join a game room
+
+Draw 7 cards automatically
+
+Realtime card updates for all players
+
+Only room host can reshuffle cards
+
+Share room code with friends
+
+Works on mobile & desktop
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
