@@ -10,7 +10,7 @@ export default function Home() {
   const [playerName, setPlayerName] = useState("");
   const [activeTab, setActiveTab] = useState("create"); // 'create' or 'join'
   const [joinRoomCode, setJoinRoomCode] = useState("");
-console.log("API KEY:", import.meta.env.VITE_API_KEY);
+// console.log("API KEY:", import.meta.env.VITE_API_KEY);
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((u) => {
       if (!u) window.location.href = "/";
