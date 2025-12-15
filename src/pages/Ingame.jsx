@@ -135,10 +135,12 @@ export default function InGame() {
   };
 
   // Get card color
-  const getCardColor = (suit) => {
-    const symbol = getSuitSymbol(suit);
-    return (symbol === '♥' || symbol === '♦') ? 'text-red-500' : 'text-white';
-  };
+ const getCardColor = (suit) => {
+  const symbol = getSuitSymbol(suit);
+  return (symbol === '♥' || symbol === '♦')
+    ? 'text-red-500'
+    : 'text-black'; // ✅ FIX
+};
 
   const cardsRemaining = (myPlayer.cards?.length || 0) - (myPlayer.selectedCards?.length || 0);
 
