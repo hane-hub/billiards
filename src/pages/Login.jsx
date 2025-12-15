@@ -5,7 +5,7 @@ export default function LoginPage() {
   const handleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-      console.log("User logged in:", result.user);
+      // console.log("User logged in:", result.user);
       window.location.href = "/home"; // redirect after login
     } catch (error) {
       console.error("Login failed:", error);

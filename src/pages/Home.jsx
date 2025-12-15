@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -10,26 +9,31 @@ export default function Home() {
   const [playerName, setPlayerName] = useState("");
   const [activeTab, setActiveTab] = useState("create"); // 'create' or 'join'
   const [joinRoomCode, setJoinRoomCode] = useState("");
-// console.log("API KEY:", import.meta.env.VITE_API_KEY);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((u) => {
       if (!u) window.location.href = "/";
-      else setUser(u);
-      setPlayerName(u.displayName || "Player 1");
+      else {
+        setUser(u);
+        setPlayerName(u.displayName || "Player 1");
+      }
     });
     return () => unsubscribe();
   }, []);
 
   const handleCreateRoom = async () => {
-    if (!user) return;
+    if (!user || !playerName.trim()) {
+      alert("Please enter your name");
+      return;
+    }
 
     const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     try {
       const roomRef = doc(db, "rooms", roomCode);
       await setDoc(roomRef, {
         host: user.uid,
-        hostName: user.displayName,
-        players: [{ uid: user.uid, name: user.displayName }],
+        hostName: playerName,
+        players: [{ uid: user.uid, name: playerName }],
         started: false,
       });
       navigate(`/room/${roomCode}`);
@@ -40,30 +44,52 @@ export default function Home() {
   };
 
   const handleJoinRoom = async () => {
-    if (!user || !joinRoomCode) return;
-
-    const roomRef = doc(db, "rooms", joinRoomCode.toUpperCase());
-    const roomSnap = await getDoc(roomRef);
-
-    if (!roomSnap.exists()) {
-      alert("Room not found!");
+    if (!user || !joinRoomCode) {
+      alert("Please enter a room code");
       return;
     }
 
-    const roomData = roomSnap.data();
-    const isAlreadyIn = roomData.players.some((p) => p.uid === user.uid);
-
-    if (!isAlreadyIn) {
-      roomData.players.push({ uid: user.uid, name: user.displayName });
-      await updateDoc(roomRef, { players: roomData.players });
+    if (!playerName.trim()) {
+      alert("Please enter your name");
+      return;
     }
 
-    navigate(`/room/${joinRoomCode.toUpperCase()}`);
+    try {
+      const roomRef = doc(db, "rooms", joinRoomCode.toUpperCase());
+      const roomSnap = await getDoc(roomRef);
+
+      if (!roomSnap.exists()) {
+        alert("Room not found!");
+        return;
+      }
+
+      const roomData = roomSnap.data();
+      const isAlreadyIn = roomData.players.some((p) => p.uid === user.uid);
+
+      if (!isAlreadyIn) {
+        roomData.players.push({ uid: user.uid, name: playerName });
+        await updateDoc(roomRef, { players: roomData.players });
+      }
+
+      navigate(`/room/${joinRoomCode.toUpperCase()}`);
+    } catch (error) {
+      console.error("Failed to join room:", error);
+      alert("Failed to join room");
+    }
   };
 
-  if (!user) return <p>Loading...</p>;
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mb-4"></div>
+          <p className="text-slate-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
-return (
+  return (
     <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center px-4 py-8 sm:py-12">
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8">
@@ -124,7 +150,8 @@ return (
 
             <button
               onClick={handleCreateRoom}
-              className="w-full py-3 sm:py-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/30"
+              disabled={!playerName.trim()}
+              className="w-full py-3 sm:py-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/30 disabled:shadow-none disabled:transform-none"
             >
               Create Game
             </button>
@@ -165,7 +192,8 @@ return (
 
             <button
               onClick={handleJoinRoom}
-              className="w-full py-3 sm:py-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/30"
+              disabled={!playerName.trim() || !joinRoomCode.trim()}
+              className="w-full py-3 sm:py-4 rounded-lg bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/30 disabled:shadow-none disabled:transform-none"
             >
               Join Game
             </button>
@@ -173,13 +201,26 @@ return (
         )}
       </div>
 
-      {/* Links */}
-      <a
-        href="#"
-        className="text-indigo-500 hover:text-indigo-400 text-sm mt-6 sm:mt-8 transition-colors"
+      {/* History Link with Icon */}
+      <Link
+        to="/history"
+        className="flex items-center gap-2 text-indigo-500 hover:text-indigo-400 text-sm mt-6 sm:mt-8 transition-colors group"
       >
+        <svg 
+          className="w-4 h-4 transition-transform group-hover:scale-110" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+          />
+        </svg>
         View Game History
-      </a>
+      </Link>
 
       <p className="text-slate-500 text-xs sm:text-sm mt-8 sm:mt-10 text-center px-4">
         Built for real-life play. No online gaming, just fun with friends.
